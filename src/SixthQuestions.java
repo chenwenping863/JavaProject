@@ -2,39 +2,39 @@
  * Created by chenwenping on 17/3/5.
  */
 public class SixthQuestions {
-    /**
-     *
+    /** 题目6
+     * @param lmtStops
+     * @param roundCity
+     * @return
      */
-    public int[][] map = {
-            {-1, 5, -1, 5, 7},
-            {-1, -1, 4, -1, -1},
-            {-1, -1, -1, 8, 2},
-            {-1, -1, 8, -1, 6},
-            {-1, 3, -1, -1, -1},
-    };
+    public String solution(int lmtStops,City roundCity) {
+        int r = logicForSolution(lmtStops, roundCity.getCityName(), 0, roundCity, roundCity.getCityName(), 0);
+        return r + "";
+    }
 
     /**
-     * @param end
-     * @param path
-     * @param maxLength
+     * @param lmtStops
+     * @param roundCtyNm
+     * @param count
+     * @param city
+     * @param logRoute
+     * @param result
+     * @return
      */
-    public void dfs(String end, String path, int maxLength)
-    {
-        if (path.length() - 1 > maxLength) return;
-
-        if ( path.length() > 1 && path.endsWith(end) ) {
-            System.out.println(path + ", " + path.length());
+    private int logicForSolution(int lmtStops, String roundCtyNm, int count, City city, String logRoute, int result){
+        count ++;
+        if(count > lmtStops){
+            return result;
         }
-
-        char lastChar = path.charAt(path.length()-1);
-        int lastNodeIndex = lastChar - 'A';
-
-        for ( int i=0; i<map[lastNodeIndex].length; i++ )
-        {
-            char newChar = (char)(i + 'A');
-            if ( map[lastNodeIndex][i] > 0) {
-                dfs(end, path + newChar, maxLength);
+        for(Route r : city.getRoutes()){
+            String buffer = logRoute + r.getToCity().getCityName();
+            if(r.getToCity().getCityName().equalsIgnoreCase(roundCtyNm)){
+  //          System.out.println(buffer);
+                result ++;
+            }else{
+                result = logicForSolution(lmtStops, roundCtyNm, count, r.getToCity(), buffer, result);
             }
         }
+        return result;
     }
 }

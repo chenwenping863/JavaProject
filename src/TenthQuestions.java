@@ -4,36 +4,43 @@
 public class TenthQuestions {
 
     /**
-     *
+     * @param fromCity
+     * @param toCityNm
+     * @return
      */
-    public int[][] map = {
-            {-1, 5, -1, 5, 7},
-            {-1, -1, 4, -1, -1},
-            {-1, -1, -1, 8, 2},
-            {-1, -1, 8, -1, 6},
-            {-1, 3, -1, -1, -1},
-    };
+    //题目10
+    public String solution(City fromCity,String toCityNm){
+        String result = "NO SUCH ROUTE";
+        int r = logicForSolution10(30,toCityNm, 0, fromCity, fromCity.getCityName(),0);
+        if(r>0){
+            result = r + "";
+        }
+        return  result;
+    }
 
     /**
-     * @param end
-     * @param path
-     * @param cost
+     * @param maxDistance
+     * @param toCityNm
+     * @param distance
+     * @param fromCity
+     * @param logRoute
+     * @param result
+     * @return
      */
-    public void dfs(String end, String path, int cost) {
-        if (cost >= 30)
-            return;
-        if (cost > 0 && path.endsWith(end)) {
-            System.out.println(path + ", " + cost);
+    private int logicForSolution10(int maxDistance, String toCityNm, int distance, City fromCity,String logRoute,int result){
+        if(distance > maxDistance ){
+            return result;
         }
-        char lastChar = path.charAt(path.length() - 1);
-        int lastNodeIndex = lastChar - 'A';
-        for (int i = 0; i < map[lastNodeIndex].length; i++) {
-            char newChar = (char) (i + 'A');
-            int newCost = map[lastNodeIndex][i];
-            if (newCost > 0) {
-                dfs(end, path + newChar, cost + newCost);
+        for(Route r : fromCity.getRoutes()){
+            String buffer = logRoute + r.getToCity().getCityName();
+            int distanceBuffer = distance + r.getDistance();
+            if(r.getToCity().getCityName().equalsIgnoreCase(toCityNm) && distanceBuffer < maxDistance){
+                result ++;
+//                  System.out.println(buffer + "," + distanceBuffer + ", " + maxDistance);
             }
+            result = logicForSolution10(maxDistance,toCityNm,distanceBuffer,r.getToCity(),buffer,result);
         }
+        return result;
     }
 
 }

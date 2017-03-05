@@ -1,50 +1,51 @@
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Created by chenwenping on 17/3/5.
  */
 public class EighthAndNinthQuestions {
-
     /**
-     *
+     * @param fromCity
+     * @param toCityNm
+     * @return
      */
-    public int[][] map = {
-            {-1, 5, -1, 5, 7},
-            {-1, -1, 4, -1, -1},
-            {-1, -1, -1, 8, 2},
-            {-1, -1, 8, -1, 6},
-            {-1, 3, -1, -1, -1},
-    };
-
-    /**
-     *
-     */
-    public String bestPath = "";
-    /**
-     *
-     */
-    public int bestCost = Integer.MAX_VALUE;
-
-    /**
-     * @param end
-     * @param path
-     * @param cost
-     */
-    public void dfs(String end, String path, int cost) {
-        if (path.endsWith(end) && cost < bestCost && cost > 0) {
-            bestPath = path;
-            bestCost = cost;
-            return;
+    //题目8~9
+    public String solution(City fromCity, String toCityNm){
+        String result = "NO SUCH ROUTE";
+        TreeSet<Integer> resultSet = new TreeSet<Integer>();
+        logicForSolution(-1, toCityNm, 0, fromCity, fromCity.getCityName(), 0, resultSet);
+        if(null != resultSet.ceiling(0)){
+            result = resultSet.ceiling(0) +  "";
         }
-        char lastChar = path.charAt(path.length() - 1);
-        int lastNodeIndex = lastChar - 'A';
-        for (int i = 0; i < map[lastNodeIndex].length; i++) {
-            char newChar = (char) (i + 'A');
-            int newCost = map[lastNodeIndex][i];
-            if (newCost > 0) {
-                if (path.indexOf(newChar) > 0)
-                    continue;
-                dfs(end, path + newChar, cost + newCost);
-            }
-        }
+        return  result;
     }
 
+    /**
+     * @param minDistance
+     * @param toCityNm
+     * @param distance
+     * @param fromCity
+     * @param logRoute
+     * @param result
+     * @param resultSet
+     */
+    private void logicForSolution(int minDistance, String toCityNm, int distance, City fromCity,String logRoute,int result,Set<Integer> resultSet){
+        if(minDistance > distance){
+            return;
+        }
+        for(Route r : fromCity.getRoutes()){
+            String buffer = logRoute + r.getToCity().getCityName();
+            int distanceBuffer = distance + r.getDistance();
+            if(r.getToCity().getCityName().equalsIgnoreCase(toCityNm)){
+                result = distanceBuffer;
+              // System.out.println(buffer + "," + result);
+                minDistance = result ;
+                resultSet.add(result);
+            }else if(logRoute.indexOf(r.getToCity().getCityName())==-1){
+                logicForSolution(minDistance,toCityNm,distanceBuffer,r.getToCity(),buffer,result,resultSet);
+            }
+        }
+        return;
+    }
 }
